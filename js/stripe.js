@@ -31,9 +31,10 @@ cardCvc.mount('#card-cvc');
 */
 function getDynamicCartDetails() {
     var priceText = jQuery(".chbs-state-selected-li .chbs-vehicle-content-price span span").text();
-	const total_amount = parseFloat(priceText.replace(/[^\d.-]/g, '')) * 100;
+    //alert(parseFloat(priceText.replace(/[^\d.-]/g, '')).toFixed(2));
+	const total_amount = parseFloat(parseFloat(priceText.replace(/[^\d.-]/g, '')).toFixed(2) * 100);
     return {
-        totalAmount: total_amount, // Amount in cents
+        totalAmount: parseInt(total_amount), // Amount in cents
         currency: 'eur',       // Currency
         label: 'Booking Payment' // Dynamic label
     };
@@ -41,9 +42,11 @@ function getDynamicCartDetails() {
 
 // Using dynamic values from getDynamicCartDetails
 //jQuery('.chbs-main-content-step-2 .chbs-button-step-next').addEventListener('click', async (event) => {
-jQuery('.chbs-main-content-step-2 .chbs-button-step-next').on('click', async (event) => {    
+jQuery('.chbs-main-content-step-2 .chbs-button-step-next, .chbs-coupon-code-section .chbs-button').on('click', async (event) => {   
+    //alert("ddddkkk");
     event.preventDefault();
     const cartDetails = getDynamicCartDetails();
+    //alert(JSON.stringify(cartDetails));
     const paymentRequest = stripe.paymentRequest({
         country: 'DK',
         currency: 'eur',  // Use dynamic currency
@@ -54,12 +57,13 @@ jQuery('.chbs-main-content-step-2 .chbs-button-step-next').on('click', async (ev
         requestPayerName: true,
         requestPayerEmail: true
     });
-    
+    //alert("nnnn");
     paymentRequest.canMakePayment().then(function(result) {
+        //alert("mmm");
         if (result) {
             const prButton = elements.create('paymentRequestButton', { paymentRequest });
             prButton.mount('#payment-request-button');
-        } else {
+        } else {//alert("llll");
             document.getElementById('payment-request-button').style.display = 'none';
         }
     });
@@ -79,6 +83,7 @@ jQuery('.chbs-main-content-step-2 .chbs-button-step-next').on('click', async (ev
             } else {
                 ev.complete('success');
                 alert('Payment successful!');
+                jQuery('.chbs-main-content-step-4 .chbs-button-step-next').trigger('click');
             }
         } catch (error) {
             ev.complete('fail');
@@ -92,7 +97,7 @@ document.getElementById('makePayment').addEventListener('click', async (event) =
     jQuery('.loader_gif').show();
     event.preventDefault();
     var priceText = jQuery(".chbs-summary-price-element-total span").eq(1).text();
-	const total_amount = parseFloat(priceText.replace(/[^\d.-]/g, '')) * 100;
+	const total_amount = parseFloat(parseFloat(priceText.replace(/[^\d.-]/g, '')).toFixed(2) * 100);
     var email = jQuery(".chbs-summary-field-E-mail-address .chbs-summary-field-value").text();
     //return;
     const { error, paymentMethod } = await stripe.createPaymentMethod({
@@ -108,7 +113,7 @@ document.getElementById('makePayment').addEventListener('click', async (event) =
         const response = await fetch('/stripe/process-payment.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentMethodId: paymentMethod.id, amount: total_amount })
+            body: JSON.stringify({ paymentMethodId: paymentMethod.id, amount: parseInt(total_amount) })
         });
         const data = await response.json();
 
@@ -117,7 +122,7 @@ document.getElementById('makePayment').addEventListener('click', async (event) =
             document.getElementById('card-errors').textContent = data.error;
         } else {
             //jQuery('.loader_gif').hide();
-            alert('Payment successful!');
+            //alert('Payment successful!');
             jQuery('.chbs-main-content-step-4 .chbs-button-step-next').trigger('click');
         }
     }
