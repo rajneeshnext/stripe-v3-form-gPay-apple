@@ -1,5 +1,5 @@
-//const stripe = Stripe('nnnn');
-const stripe = Stripe('nnn');
+//const stripe = Stripe('aa');
+const stripe = Stripe('nn');
 const elements = stripe.elements();
 const style = {
     base: {
@@ -64,6 +64,7 @@ function getTempDynamicCartDetails() {
 jQuery(document).on('click', '.chbs-main-content-step-4 .chbs-coupon-code-section .chbs-button', function() {
 	//alert("Coupon"+cartDetails.totalAmount);
 	// Update the payment request total
+	jQuery('#payment-request-button').css('pointer-events', 'none');
 	setTimeout(function() {
 		const cartDetails = getDynamicCartDetails();
 		paymentRequest.update({
@@ -72,7 +73,8 @@ jQuery(document).on('click', '.chbs-main-content-step-4 .chbs-coupon-code-sectio
 				amount: cartDetails.totalAmount, // New total in cents
 			},
 		});
-	}, 2000); 
+		jQuery('#payment-request-button').css('pointer-events', 'auto');
+	}, 3000); 
 });
 //jQuery(document).on('click', '.chbs-main-content-step-4 .chbs-coupon-code-section .chbs-button', function() {
 //jQuery('.chbs-main-content-step-4 .chbs-coupon-code-section .chbs-button').on('click', async (event) => {  
