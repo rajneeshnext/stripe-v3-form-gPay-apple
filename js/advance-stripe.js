@@ -1,6 +1,5 @@
-//const stripe = Stripe('bbbb');
-// This updated the price on dynamic class
-const stripe = Stripe('bbbb');
+//const stripe = Stripe('nnnn');
+const stripe = Stripe('nnn');
 const elements = stripe.elements();
 const style = {
     base: {
@@ -73,7 +72,7 @@ jQuery(document).on('click', '.chbs-main-content-step-4 .chbs-coupon-code-sectio
 				amount: cartDetails.totalAmount, // New total in cents
 			},
 		});
-	}, 1000); 
+	}, 2000); 
 });
 //jQuery(document).on('click', '.chbs-main-content-step-4 .chbs-coupon-code-section .chbs-button', function() {
 //jQuery('.chbs-main-content-step-4 .chbs-coupon-code-section .chbs-button').on('click', async (event) => {  
